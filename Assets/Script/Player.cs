@@ -6,6 +6,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float velocidad = 5f;
     [SerializeField] private float distanciaRayCast = 5f;
     [SerializeField] private float disntanciaOverlap = 2f;
+    [SerializeField] private int Dano = 10;
+    public LayerMask layerMask; // Este será el LayerMask que define qué capas considerar
     private Rigidbody2D rb2d;
 
     void Start()
@@ -16,11 +18,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             interactuarConObjecto();
         }
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             Atacar();
         }
@@ -30,36 +32,49 @@ public class Player : MonoBehaviour
 
     private void interactuarConObjecto()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.up, distanciaRayCast);
 
-        Debug.DrawRay(transform.position, Vector2.up * distanciaRayCast, Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.up, distanciaRayCast, ~layerMask);
 
-        if (hit.collider.GetComponent<Iinteractuable>() != null) 
+        Debug.DrawRay(transform.position, Vector2.up * distanciaRayCast, Color.red, 0.1f);
+
+        if (hit.collider != null)
         {
-            Debug.Log("Le pegue" + hit.collider.name);
-            hit.collider.GetComponent<Iinteractuable>().Accion();
+            Debug.Log("Raycast golpeó con: " + hit.collider.name + " en capa: " + LayerMask.LayerToName(hit.collider.gameObject.layer));
+
+            Iinteractuable interactuable = hit.collider.GetComponent<Iinteractuable>();
+            if (interactuable != null)
+            {
+                Debug.Log("Interacción con: " + hit.collider.name);
+                interactuable.Accion();
+            }
+            else
+            {
+                Debug.Log("El objeto golpeado no tiene Iinteractuable");
+            }
         }
         else
         {
-            Debug.Log("No estoy intectuando con objectos");
+            Debug.Log("Raycast no golpeó ningún objeto");
         }
     }
+
     void Atacar()
     {
         Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, disntanciaOverlap);
         foreach (var hitCollider in hitColliders) //lo recorre
         {
-            if (hitCollider.GetComponent<IReciboDaño>() != null)
+            if (hitCollider.GetComponent<IreciboDaño>() != null)
             {
                 Debug.Log("Le pegue" + hitCollider.name);
-                hitCollider.GetComponent<IReciboDaño>().RecibirDaño(Dano);
+                hitCollider.GetComponent<IreciboDaño>().RecibirDaño(Dano);
+
             }
         }
     }
     void Caminar()
     {
         var Movimiento_X = Input.GetAxisRaw("Horizontal");
-        rb2d.velocity = new Vector2(Movimiento_X * velocidad, 0);
+        rb2d.linearVelocity = new Vector2(Movimiento_X * velocidad, 0);
     }
 
 }

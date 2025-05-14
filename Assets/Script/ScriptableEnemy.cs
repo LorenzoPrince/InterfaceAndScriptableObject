@@ -4,12 +4,12 @@ using UnityEngine;
 public class ScriptableEnemy : ScriptableObject //Se utiliza para almacenar datos, util para compartir datos entre varias instancias.
 {
     [SerializeField] private string nombre;
-    [SerializeField] private string daño;
-    [SerializeField] private string vida;
+    [SerializeField] private int daño;
+    [SerializeField] private int vida;
 
     public string Nombre { get { return nombre; } } //el get recordar que es para ver.
-    public string Daño { get { return nombre; } }
-    public string Vida { get { return nombre; } } 
+    public int Daño { get { return daño; } }
+    public int Vida { get { return vida; } } 
 
     public void PrintDate()
     {
