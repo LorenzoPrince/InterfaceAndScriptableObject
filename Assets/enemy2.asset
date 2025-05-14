@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a64d2c63e7eb8334a880277433476e15, type: 3}
   m_Name: enemy2
   m_EditorClassIdentifier: 
-  nombre: 
-  "da\xF1o": 0
-  vida: 0
+  nombre: satur
+  "da\xF1o": 30
+  vida: 100
